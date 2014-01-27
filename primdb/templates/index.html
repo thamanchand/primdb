@@ -1,0 +1,448 @@
+{%extends "base.html"%}
+{%block page_title%}PrimDB- A Precursor ion mass database{%endblock%}
+{%block custom_style%}
+
+<!-- custom styles -->
+    <style type="text/css">
+
+		body {
+			font-family: 'Open Sans', sans-serif;
+			padding-top: 20px;
+			padding-bottom: 40px;
+		}
+
+		#logo
+			a .off { 
+				display: block; 
+			}
+			a .on { 
+				display: none; 
+			}
+			a:hover .off { 
+				display: none; 
+			}
+			a:hover .on { 
+				display: block; 
+			}
+		.footer{
+			padding:20px;
+		 	margin: 30px 0 0 0;
+		 	color:#000000;
+		 	background:url("{{STATIC_URL}}img/footer_texture.png") repeat;
+		 	clear: both;
+		}
+		#plotstatistics {
+		 	background:url("{{STATIC_URL}}img/footer_texture.png") repeat;
+		}
+		#preview {
+			position:absolute;
+			border:1px solid #ccc;
+			background:#f5f7f7;
+			padding:5px;
+			display:none;
+			color:#fff;
+		}
+		.thumbnail{
+			 @include border-radius(10px);
+			 background:#eee;
+			 .caption{
+			  position:relative;
+			  color:#ccc9c9;
+			  h5{
+			   position:absolute;
+			   top:-19px;
+			   left:10px;
+			   font-size:2em;
+			   color:#fff;
+			   @include text-shadow(#000 1px 5px 10px);
+			  }
+			 }
+			}
+		.border {
+            border: 1px solid #afafaf;
+        }
+        .precursordef {
+        	font-size: 12px;
+        }
+    </style>
+ {%endblock%}
+{%block maincontent%}
+
+<!-- start of the main section form-->
+       	<div class="row">
+       		<div class="span9">
+		    	<div class="row">
+				    <div class="span6">
+						<form class="form-horizontal well" name="form" method="post" enctype="multipart/form-data">
+							{% csrf_token %}
+			                <!--{% csrf_token %}-->
+			                {%if errmsg%}
+			                	<div class="alert alert-error">
+									<ul class="unstyled">
+				                   		{%for error in errmsg%}
+				                       		<li>{{error}}</li>
+				                        {%endfor%}
+		                			</ul>
+	                			</div>
+	                		{% endif %}
+							<fieldset>
+								<legend class="text-success">Start your search</legend>
+								<div class="control-group">
+									<label class="control-label"><b>Neutral mass or precursor ion m/z</b></label>
+									<div class="controls">
+										<div class="input-append"><input type="text" name="textmz" class="example2tooltip" value="1453.6871"><span class="add-on"><i class="icon-search"></i></span>
+									</div>
+									<p class="help-block"><b>OR upload text file with list of m/z</b></p>
+								</div>
+
+								<br>
+							  	<div class="control-group">
+									<label class="control-label" for="fileInput">Upload text file</label>
+									<div class="controls">
+										<input class="input-file" id="fileInput" type="file" name="myfile">
+									</div>
+							  	</div>
+
+								<div class="control-group">
+									<label class="control-label" for="select01">Charge (z)</label>
+									<div class="controls">
+										<select id="myselect" name="ch">
+											<option value="neutral">neutral</option>
+											<option value="1">1<sup>+</sup></option>
+											<option value="2">2<sup>+</sup></option>
+											<option value="3">3<sup>+</sup></option>
+											<option value="3">4<sup>+</sup></option>
+											<option value="none">Any</option>
+											
+										</select>
+									</div>
+								</div>
+
+								<legend class="text-alert">Filter (optional)</legend>
+								<div class="control-group">
+									<label class="control-label" for="select01">Search-In</label>
+									<div class="controls">
+										<select id="myselect" name="r">
+											<option value="all">Whole database</option>
+											<option value="recent">Recent 5 mzML</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="control-group">
+									<label class="control-label">Date</label>
+										<div class="controls">
+											<div class="input-append"><input type="text" id="dp1" name="fdate1"></div>
+											<p class="help-block"><b>To</b></p><br>
+											<div class="input-append"><input type="text" id="dp2" name="fdate2"></div>
+										</div>
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label">Instrumentation</label>
+									<div class="controls">
+									  <select name="s1" disabled="disabled"> 
+											<option value="LTQ Orbitrap Velos" selected>
+											LTQ Orbitrap Velos
+											</option>
+											<option value="AB SCIEX">
+											AB SCIEX
+											</option>
+											<option value="QSTAR ELITE">
+											QSTAR ELITE
+											</option>
+											<option value="QSTAR PULSAR">
+											QSTAR PULSAR
+											</option>
+											<option value="ULTRA FLEX TOF/TOF">
+											ULTRA FLEX TOF/TOF
+											</option>
+										</select>
+									</div>
+								</div>
+							  
+								<div class="control-group">
+									<label class="control-label">Precision</label>
+									<div class="controls">
+										<div class="input-append">
+											<input type="text" name="prec" value="4"><span>
+												<span class="add-on">decimals</span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label">Mass Tolerance</label>
+									<div class="controls">
+									  <select id="select01" name="ppm">
+											<option value="0.05">0.05</option>
+											<option value="0.1">0.1</option>
+											<option value="0.5">0.5</option>
+											<option value="1">1</option>
+											<option value="2">2</option>
+											<option value="3">3</option>
+											<option value="4">4</option>
+											<option value="5" selected="selected">5</option> 
+											<option value="6">6</option>
+											<option value="7">7</option>
+											<option value="8">8</option>
+											<option value="9">9</option>
+											<option value="10">10</option>
+
+										</select>
+										<b>PPM</b>
+									</div>
+							  	</div>
+
+							  	<div class="form-actions">
+    								<button type="supmit" class="btn btn-success">Search</button>
+    							</div>
+							</fieldset>
+						</form>
+					</div>
+
+					<!--start of the help section-->
+				    <div class="span3">
+				    	<h4>Help section</h4>
+						<div class="accordion" id="accordion2">
+                			<div class="accordion-group">
+			                	<div class="accordion-heading">
+			                    	<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+			                      		Neutral mass or precursor ion m/z
+			                    	</a>
+			                  	</div>
+                  
+                  			<div id="collapseOne" class="accordion-body collapse in">
+                   				<div class="accordion-inner">
+                   					<b>Example</b>
+	                      			<ul>
+		                    			
+		                                 <li class="small"> <b>492.1977 or 480.876 </b> charge <b>any</b>
+		                                 <li class="small"> <b>1453.6871 </b> with charge state<b> neutral</b>
+	                				</ul>
+                   			 	</div>
+                  			</div>
+                		</div>
+                
+                		<div class="accordion-group">
+		                  	<div class="accordion-heading">
+			                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+			                      Charge State
+			                    </a>
+		                  </div>
+		                  	<div id="collapseTwo" class="accordion-body collapse">
+		                    	<div class="accordion-inner">
+			                      	<ul>
+			                    		<li class="small">Typical peptide charge states are 1<sup>+</sup>, 2<sup>+</sup>, 3<sup>+</sup> and 4<sup>+</sup>. Also higher charges are possible.</li>
+			                            <li class="small">  General rule is: (neutral peptide mass + charge state) / charge state</li>
+			                        
+			                            <li class="small"> <b>1313.6575 </b> with charge state<b> 2<sup>+</sup></b>
+			                            </li>
+			                		</ul>
+		                    	</div>
+		                  	</div>
+		                </div>
+                		
+                		<div class="accordion-group">
+                 			<div class="accordion-heading">
+                    			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+                      				Search-In
+                    			</a>
+                  			</div>
+                  			<div id="collapseThree" class="accordion-body collapse">
+                    			<div class="accordion-inner">
+                     				<ul>
+			                    		<li class="small"> Where you want to search in database? </li>
+		                                <li class="small"> If you select <b> ALL </b> then it will search in all experiments </li>
+		                                <li class="small"> If you select <b> Recent </b> then it will search in latest <b>5</b> experiments </li>
+		                                <li class="small"> It's always good to search in with <b>ALL</b> options for finding more result</li>
+			                		</ul>
+                    			</div>
+                  			</div>
+                		</div>
+                		<div class="accordion-group">
+                 			<div class="accordion-heading">
+                    			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">
+                      				Date
+                    			</a>
+                  			</div>
+                  			<div id="collapseFour" class="accordion-body collapse">
+                    			<div class="accordion-inner">
+                     				<ul>
+			                    		<li class="small"> Search with specific date the experiment was created </li>
+			                            <li class="small"> It's always good to search with <b>Blank</b> options for finding more results.</li>
+			                            <li class="small"> If you want to search with specific date, give input, <b>e.g : 15/03/2013</b></li>
+			                             <li class="small"> Or you can search with two different time intervals</b></li>
+			                		</ul>
+                    			</div>
+                  			</div>
+                		</div>
+
+                		<div class="accordion-group">
+                 			<div class="accordion-heading">
+                    			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">
+                      				Mass Tolerance
+                    			</a>
+                  			</div>
+                  			<div id="collapseFive" class="accordion-body collapse">
+                    			<div class="accordion-inner">
+                     				<ul>
+			                    		<li class="small">Defines the maximal difference between an experimental mass and a theoretical one that is considered a match by the search. It reflects the spectrometer’s measurement and calibration errors. Mass tolerance may be entered as the absolute difference in Daltons, or as the fraction of mass in parts-per-million (ppm). The default value is in ppm units, since measurement and calibration errors in a spectrometer are proportional to the mass. Setting mass tolerance too high may compromise the quality of the search. Setting the tolerance too low may cause the search to miss peptides.</li>
+			                		</ul>
+                    			</div>
+                  			</div>
+                		</div>
+				    </div>
+				    <!--end of the help section-->
+
+				</div>
+			</div>
+		</div>
+
+		<!--start of the right section-->
+
+		<div class="span3">
+      		<h4>Statistics</h4>
+	      	<div class="well" style="padding: 8px 0;">
+		        <ul class="nav nav-list">
+		        	<li class="nav-header">Experiments</li>
+			        <li>mzML: <b>{{exp}}</b></li>
+			        <li>pepXML: <b>{{pep}}</b></li>
+			        <li>Precursor Ions: <b>{{mass}}</b></li>
+			        <li class="nav-header">Files</li>
+			        <li><a href="mzml/">mzML</a></li>
+			        <li><a href="pepxml/">pepXML</a></li>
+		        </ul>
+	      	</div>
+    	</div>
+		<!--end of the right section-->
+
+		<!-- start of the plot section-->
+		<div id="example3Content" style="display:none">
+			<h5>How does it work?</h5>
+			<p class="success">Two different search can be perform depending upon the type of mass and charge state.</p>
+			<ul>
+				<li class="small">
+					<p><b><u>Neutral mass</u></b></p>
+					<p class="precursordef">- If search is done with <b>neutral mass</b> then select <b>charge</b> type as <b>neutral.</b> </p>
+				</li>
+				<li class="small">
+					<p><b><u>Precursor ion m/z</u></b></p>
+					<p class="precursordef">- For the <b>precursor ion m/z </b>search select the <b>charge state</b> for example: 1 or 2 or 3 or 4.</p>
+				</li>
+				<li class="small">Similiar technique can be implemented if search is done from the uploaded text file.</li>
+				<li class="small">The example can be found in the Neutral mass or precursor ion m/z help section.</li>
+
+			</ul>
+		</div>
+
+
+		<div class="row">
+			<div class="span13">
+				<h5>Database statistic in Plots</h5>
+				<div id="plotstatistics">
+					<div class="span4">
+
+						<div class="thumbnail">
+						 <a href="{{STATIC_URL}}img/statistics1.png" class="preview" title="Mass range vs Frequency"><img src="{{STATIC_URL}}img/statistics1.png" height="300" width="350" ALT="Mass range vs Frequency" /></a>
+						 <div class="caption">
+						   <p><b><u>Figure 1:</u></b> The precursor ion count.</p>
+						 </div>
+						</div>
+					</div>
+					<div class="span4">
+						<div class="thumbnail">
+							<a href="{{STATIC_URL}}img/statistics2.png" class="preview" title="Charge state vs Frequency"><img class="imgid" src="{{STATIC_URL}}img/statistics2.png" height="300" width="350" ALT="Charge state vs Frequency" /></a>
+							 <div class="caption">
+							   <p><b><u>Figure 2:</u></b> The precursor charge state count.</p>
+							 </div>
+						</div>
+					</div>
+					<div class="span4">
+						<div class="thumbnail">
+							<a href="{{STATIC_URL}}img/statistics3.png" class="preview" title="Charge state vs Frequency"><img class="imgid" src="{{STATIC_URL}}img/statistics3.png" height="300" width="350" ALT="Charge state vs Frequency" /></a>
+							 <div class="caption">
+							   <p><b><u>Figure 3:</u></b> The count of missed cleavage. </p>
+							 </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end of the plot section-->
+{%endblock%}
+{%block scripts%}
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+		
+    <script src="{{STATIC_URL}}js/jquery.js"></script>
+    <script src="{{STATIC_URL}}js/bootstrap-modal.js"></script>
+    <script src="{{STATIC_URL}}js/bootstrap-collapse.js"></script>
+    <script src="{{STATIC_URL}}js/bootstrap-datepicker.js"></script>
+    <script src="{{STATIC_URL}}js/bootstrap-transition.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/main.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/jquery.tooltip.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/jquery.hoverIntent.js"></script>
+
+
+	<script>
+		$(function(){
+			window.prettyPrint && prettyPrint();
+			$('#dp1').datepicker({
+			format: 'dd/mm/yyyy',
+			});
+			$('#dp2').datepicker();
+			$('#dp3').datepicker();
+			$('#dp3').datepicker();
+			$('#dpYears').datepicker();
+			$('#dpMonths').datepicker();
+			
+			
+			var startDate = new Date(2012,1,20);
+			var endDate = new Date(2012,1,25);
+			$('#dp4').datepicker()
+				.on('changeDate', function(ev){
+					if (ev.date.valueOf() > endDate.valueOf()){
+						$('#alert').show().find('strong').text('The start date can not be greater then the end date');
+					} else {
+						$('#alert').hide();
+						startDate = new Date(ev.date);
+						$('#startDate').text($('#dp4').data('date'));
+					}
+					$('#dp4').datepicker('hide');
+				});
+			$('#dp5').datepicker()
+				.on('changeDate', function(ev){
+					if (ev.date.valueOf() < startDate.valueOf()){
+						$('#alert').show().find('strong').text('The end date can not be less then the start date');
+					} else {
+						$('#alert').hide();
+						endDate = new Date(ev.date);
+						$('#endDate').text($('#dp5').data('date'));
+					}
+					$('#dp5').datepicker('hide');
+				});
+		});
+
+		 $(function() {
+			$( "#accordion" ).accordion();
+		});
+
+		$('.example2tooltip').tooltip({ 
+			tooltipSourceID:'#example3Content',
+			loader:1,
+			loaderImagePath:'spinner.gif',
+			loaderHeight:16,
+			loaderWidth:17,
+			width:'550px',
+			height:'280px',
+			tooltipSource:'inline',
+			borderSize:'4',
+			borderColor:'#dedede',
+			tooltipBGColor:'#efefef'
+		}); 
+	</script>
+
+{%endblock%}

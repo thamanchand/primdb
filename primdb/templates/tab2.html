@@ -1,0 +1,128 @@
+<script type="text/javascript">  
+        $(document).ready(function(){
+            $("#newspaper-b tr:odd").addClass("odd");
+            $("#newspaper-b tr:not(.odd)").hide();
+            $("#newspaper-b tr:first-child").show();
+            
+            $("#newspaper-b tr.odd").click(function(){
+                $(this).next("tr").toggle();
+                $(this).find(".arrow").toggleClass("up");
+            });
+            //$("#report").jExpand();
+        });
+</script>
+{% load mysplit %}
+{%if pepsearch and spectquery %}
+<h5>Peptide {%for pep in spectquery%}
+ <span style="color: black">[<i>spectrum_ID: {{pep.spectrum}}, PNM: {{pep.pre_neu_mass}}, Charge: {{pep.assume_charge}}</i>]</span> {%endfor%}</h5> 
+<table class="table table-bordered">
+    <thead>
+    	<tr>
+        	<th bgcolor="#eee">Hit Rank</th>
+            <th bgcolor="#eee">Peptide</th>
+            <th bgcolor="#eee">Protein</th>
+            <th bgcolor="#eee">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+	{% for pepse in pepsearch %}
+	<tr>
+    	
+        <td>{{pepse.hit_rank}}</td>
+        <td><font color="#556b2f"><b>{{pepse.peptide}}</b></font></td>
+       
+       
+          <td><a href= "http://www.uniprot.org/uniprot/{{pepse.protein}}" target="_blank">{{pepse.protein}}</a></td>
+        <td>{{pepse.protein_desc}}</td>
+        <td><div class="arrow"></div></td>
+
+    </tr>
+    <tr>
+        <td colspan="5">
+                <h5>Additional information</h5>
+                <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                          <th bgcolor="#eee" title="Number Total Protein">Number of matched proteins</th>
+                          <th bgcolor="#eee" title="Number matched ions">Number of matched ions</th>
+                           <th bgcolor="#eee" title="calculated neutral peptide mass">Calculated neutral precursor mass</th>
+                          <th bgcolor="#eee" title="Mass Difference">Mass difference</th>
+                          <th bgcolor="#eee" title="Number Miss Cleavage">Number of miss cleavage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{pepse.num_total_protein}}</td>
+                        <td>{{pepse.num_matched_ions}}</td>
+                        <td>{{pepse.calc_neutral_pep_mass}}</td>
+                        <td>{{pepse.massdiff}}</td>
+                        <td>{{pepse.num_missed_cleavage}}</td>
+                      </tr>
+                    </tbody>
+                </table>
+        </td>
+    </tr>
+	{%endfor%}
+</tbody>
+</table>
+{%endif%}
+
+{%if alt_p %}
+<h5>Alternative</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th bgcolor="#eee">#</th>
+            <th bgcolor="#eee">Protein</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for altp in alt_p %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td><a href= "http://www.uniprot.org/uniprot/{{altp.protein}}" target="_blank">{{altp.protein}}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%endif%}
+
+{%if spectquery%}
+<br>
+<h5> pepXML Detail</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th bgcolor="#eee">Filename</th>
+            <th bgcolor="#eee">User</th>
+            <th bgcolor="#eee">Uploaded</th>
+            <th bgcolor="#eee">Size</th>
+            <th bgcolor="#eee">Located</th>
+            <th bgcolor="#eee">Link</th>       
+            
+        </tr>
+        </thead>
+        <tbody>
+        {%for pep in spectquery%}
+        <tr>
+            <td>{{pep.spec_query_fk.filename}}</td>
+            <td>{{pep.spec_query_fk.fuser}}</td>
+            <td>{{pep.spec_query_fk.uploaded}}</td>
+            <td>{{pep.spec_query_fk.size}}</td>
+            <td>{{ pep.spec_query_fk.located|truncatechars:30 }}</td>
+            <td><a href="{{pep.spec_query_fk.mascotpath}}" target="_blank">Mascot</a></td>
+        </tr>
+        {%endfor%}
+</tbody>
+</table>
+{%endif%}
+
+{% if error%}
+<div id="norec">
+    <h3> Oops! No peptide and protein Found!!! </h3>
+    <h4> * No peptide have been identified with the given precursor ion mass. </h4>     
+    <h4> * Or there is no pepXML record uploaded into the database.</h4>
+    <h4> * Or Spectrum ID from mzML file (converted from RAW) didn't match with Spectra ID in pepXML file.</h4>
+    <h4> * If you think this is a serious <b><u>error</u></b> then please do contact developer. Contact Information is available below.</h4>
+</div>
+{%endif%}

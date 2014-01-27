@@ -1,0 +1,316 @@
+{%extends 'base.html'%}
+<title>{%block page_title%}Searched: {%if query %}{{query}}{%else%}{{file}}{%endif%}{%endblock%} </title>
+{%block custom_style%}
+
+<!-- custom styles -->
+    <style type="text/css">
+
+		body {
+			font-family: 'Open Sans', sans-serif;
+			padding-top: 20px;
+			padding-bottom: 40px;
+
+		}
+		table {
+			font-size: 12px;
+		}
+		.identified{
+			padding:20px 20px;
+			background-color: #66FF99;
+			color: #006666;
+		}
+		.notidentified{
+			padding: 1px;
+			background-color: #CCFFCC;
+			color: #000033;
+		}
+
+		#logo
+			a .off { 
+				display: block; 
+			}
+			a .on { 
+				display: none; 
+			}
+			a:hover .off { 
+				display: none; 
+			}
+			a:hover .on { 
+				display: block; 
+			}
+		.footer{
+			padding:20px;
+		 	margin: 30px 0 0 0;
+		 	color:#000000;
+		 	background:url("{{STATIC_URL}}img/footer_texture.png") repeat;
+		 	clear: both;
+		 }
+        .span4 a.active {
+			color: #006633;
+			font-size: medium;
+			font-weight: bold;
+			text-decoration: underline;
+		}
+		#norec {
+			float: left;
+			text-align: left;
+			height:600px;
+		}
+		#norec h3{
+			color:#FF3300;
+		}
+		#norec h4{
+			color:#0099CC;
+			font-size:11px;
+		}
+		div.hrgreen {
+			clear: left;
+			height: 20px;
+			text-align: center;
+			width: 100px;
+			background: #66FF99;
+		}
+		div.hrlight {
+			clear: left;
+			height: 20px;
+			text-align: center;
+			width: 100px;
+			background: #CCFFCC;
+		}
+    </style>
+ {%endblock%}
+
+{%block maincontent%}
+	<!--{{chargecount}}
+	<hr>
+	{{masses}}
+	<hr>
+	{{mass_with_charge}}
+	<hr>
+	{{mass_dict}}
+	<hr>
+	{{dict}}
+	{{mytype}}-->
+    {% if sections %}
+    <h4><u>Query</u></h4>
+    <div class="span12">
+       	<ul class="unstyled">
+          	<li>Searched : <u>{{query}}</u></li>
+         		<li>Charge : {{cs}}</li>
+           		{%if ss%} <li>Search Space : {{ss}}</li>{%endif%}
+           		{%if sd%} <li>Search Date : {{sd}}</li>{%endif%}
+            	<li>Precision : {{prec}} decimals</li>
+         		<li>Tolerance : {{ppm}} PPM</li>
+        </ul>
+        <hr>
+    </div>
+    {%endif%}
+    {% if filesection %}
+    <h4><u>Query</u></h4>
+    <div class="span12">
+      <ul class="unstyled">
+          <li>File : {{file}}</li>
+          <li>Searched : {{search_id}}</li>
+          <li>Charge : {{cs}}</li>
+          {%if ss%} <li>Search Space : {{ss}}</li>{%endif%}
+          {%if sd%} <li>Search Date : {{sd}}</li>{%endif%}
+          <li>Precision : {{prec}} decimals</li>
+          <li>Tolerance : {{ppm}} PPM</li>
+      </ul>
+    </div>
+    <hr>
+	{%endif%}
+	<hr>
+	<h4><u>Result</u></h4>
+	<div class="span12">
+		{% if sections %}
+		<ul class="unstyled">
+			<li>Matched with : <u>{{qcount}}</u> record{{qcount|pluralize}}</li>
+	        <!--<li>Mass window M/Z: Low <i>(<u>{{low}}</u>)</i> - High <i>(<u>{{high}}</u>)</i> </li>-->
+	        <li><b>Legend</b></li>
+	        <li><div class="hrgreen">Identified</div></li>
+	        <li><div class="hrlight">unidentified</div></li>
+	    </ul>
+	    {%else%}
+	    <ul class="unstyled">
+			<li>Matched with :<b> <u>{{qcount}}</u></b> record{{qcount|pluralize}}</li>
+	        <li><b>Legend</b></li>
+	        <li><div class="hrgreen">Identified</div></li>
+	        <li><div class="hrlight">unidentified</div></li>
+	    </ul>
+	    {%endif%}
+	     <hr>
+    </div>
+
+	<div class="row">
+		<div class="12">
+			{%if sections%}
+	   		<div class="span4" style="height:600px; overflow:scroll; overflow-x:hidden">
+	                <table class="table table-bordered">
+	                    <tr>
+	                        <!--<th>#</th>-->
+	                        <th>M/Z</th>
+	                        <th>Experiment</th>
+	                    	<th>Charge</th>
+	                    </tr> 
+	                   
+	                    {% for section in sections %}
+	                    {%for spectrum in section.spectrum_set.all%}
+	               		{% if spectrum.identified|stringformat:"s" == "Y"  %}
+	                    <tr>
+	                        <!--<td>{{forloop.counter}}</td> -->
+	                        
+		                 	<td class="identified"><a href="#q?={{section.id}}" class="match" id="{{section.id}}">{{section.monoiso|floatformat:prec}}</a></td>
+		                    <td class="identified">{{section.sele_fk.exp.filename}}</td>
+		                    <td class="identified">{{section.chargestate}}<sup>+</sup></td>
+	                    </tr>
+	                    {%else%}
+	                   		<tr>	                        
+			                 	<td class="notidentified"><a href="#q?={{section.id}}" class="match" id="{{section.id}}">{{section.monoiso|floatformat:prec}}</a></td>
+			                    <td class="notidentified">{{section.sele_fk.exp.filename}}</td>
+			                    <td class="notidentified">{{section.chargestate}}<sup>+</sup></td>
+	                   		</tr>
+	                    {%endif%}
+	                  	{% endfor %}
+	              		{% endfor %}
+	                </table>
+	            </div> 
+	        </div>
+	        {%endif%}    
+	        {%if filesection %}
+	        <div class="span4" style="height:400px; overflow:scroll; overflow-x:hidden">
+	        	<table class="table table-bordered">
+	           		<tr>
+	                   	<th bgcolor="#F9F9F9"> M/Z</th>
+	                    <th bgcolor="#F9F9F9">Experiment</th>
+	                </tr> 
+	                {% for result in filesection %}
+	                {% for data in result %}
+	               	{%for spectrum in data.spectrum_set.all%}
+	              	{% if spectrum.identified|stringformat:"s" == "Y"  %}
+		           	<tr>
+		               	<td class="identified"><a href="#q?={{data.id}}" class="match" id="{{data.id}}">{{data.monoiso|floatformat:prec}}</a></td>
+		                <td class="identified">{{data.sele_fk.exp.filename}}</td>  
+		           	</tr>
+		           	{%else%}
+		           		<td class="notidentified"><a href="#q?={{data.id}}" class="match" id="{{data.id}}">{{data.monoiso|floatformat:prec}}</a></td>
+		                <td class="notidentified">{{data.sele_fk.exp.filename}}</td>  
+		           	{%endif%}
+		           	{% endfor %}
+		           {% endfor %}
+		           {% endfor %}
+	            </table>
+	        </div>
+	        {%endif%}
+	        <div class="span8">
+			    <ul class="nav nav-tabs tabs">
+		            <li class="active"><a href="#tab1" id="1">Spectrum</a></li>
+		            <li class=""><a href="#tab2" id="2">Peptides & proteins</a></li>
+		            <li class=""><a href="#tab4" id="4">Experiment</a></li>
+		            <li class=""><a href="#tab5" id="5">Settings</a></li>
+	       		</ul>
+	    
+		        <div class="tab_container">
+		            <div style="display: block;" id="tab1" class="tab_content">
+		               	<div id="result" ></div>
+		         	</div>
+				
+		        	<div style="display: none;" id="tab2" class="tab_content">
+		        		<div id="myresult" ></div>
+		        	</div>
+		       		<div style="display: none;" id="tab4" class="tab_content">
+		        		<div id="myresult2" ></div>
+		       		</div>
+		          <div style="display: none;" id="tab5" class="tab_content">
+		            <div id="myresult5" ></div>
+		          </div>
+		      	</div>
+	    </div>
+{%endblock%}
+{%block scripts%}
+<script src="{{STATIC_URL}}js/jquery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+//Default Action
+
+	$(".tab_content").hide(); //Hide all content
+	$("a.match:first").addClass("active");
+	$("ul.tabs li:first").addClass("active").show(); //Activate first tab
+	$(".tab_content:first").show(); //Show first tab content
+	$( '#result' ).html( '&nbsp;' ).load( '{% url "index"%}'+'result/' + $("td a:first").attr('id') + '/' +$("ul.tabs li").find("a").attr('id') );
+
+	//On individual tab click
+	
+	$("ul.tabs li").click(function() {
+
+		$("ul.tabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".tab_content").hide(); //Hide all tab content
+		var activeTab = $(this).find("a").attr("href"); //Find the rel attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active content
+		//$(".match").removeClass("active");
+		//$(".match.active").addClass("active");
+		
+		linktab = $(this).find("a").attr('id');
+		
+		//linkmatch = $("td").addClass("active");
+		linkmatch = $('.match.active').attr('id');
+		
+		if( linktab==2 ) {
+		
+ 			$( '#myresult').html( '&nbsp;' ).load( '{% url "index"%}'+'result/'+ 'tab/' + 2 + '/match/' + linkmatch);
+			
+		}
+		else if( linktab==3 ) {
+ 			$( '#myresult1').html( '&nbsp;' ).load( '{% url "index"%}' +'result/'+ 'tab/' + 3 + '/match/' + linkmatch);
+		}
+		else if( linktab==4 ) {
+ 			$( '#myresult2').html( '&nbsp;' ).load( '{% url "index"%}'+'result/' + 'tab/' + 4 + '/match/' + linkmatch);
+		}
+    else if( linktab==5 ) {
+      $( '#myresult5').html( '&nbsp;' ).load( '{% url "index"%}'+'result/' + 'tab/' + 5 + '/match/' + linkmatch);
+    }
+		else{
+		$( '#myresult').html( '&nbsp;' ).load( '{% url "index"%}'+'result/' + 'tab/' + linktab + '/match/' + linkmatch);
+		}
+
+		
+	});
+	
+	// match click 
+	$("td a").bind("click", function(){
+		$("a.match").removeClass("active");
+		$("ul.tabs li").removeClass("active");
+		$(".tab_content").hide(); //Hide all content
+		$("ul.tabs li:first").addClass("active").show(); //Activate first tab
+		
+		$(".tab_content:first").show(); //Show first tab content
+		
+		
+		$(this).addClass("active");
+		var str = $(this).attr('id');
+		tab = $("ul.tabs li").find("a").attr('id');
+		$( '#result' ).html( '&nbsp;' ).load( '{% url "index"%}' + 'match/' + str + '/tab/' +tab );
+		
+	});
+		
+});
+		/*$( document ).ajaxStart( function() {
+		$( '#spinner' ).show();
+		}).ajaxStop( function() {
+		$( '#spinner' ).hide();
+
+		}); */
+$(document).ready(function(){
+                $('#login-trigger').click(function(){
+                    $(this).next('#login-content').slideToggle();
+                    $(this).toggleClass('active');                  
+                    
+                    if ($(this).hasClass('active')) $(this).find('span').html('&#x25B2;')
+                        else $(this).find('span').html('&#x25BC;')
+                    })
+          });
+</script> 
+
+{%endblock%}

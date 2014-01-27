@@ -1,0 +1,169 @@
+{% load mysplit %}
+{% load mysplit1%}
+
+
+{%if prosearch%}
+<h2> Identified Protein</h2>
+<table id="table-3">
+		<tr>
+			<th bgcolor="#eee">Source</th>	
+			<th bgcolor="#eee">Prot ID</th>
+            <th bgcolor="#eee">Gene_Organism</th>
+            <th bgcolor="#eee">Description</th>
+            
+    	</tr>
+        
+		{%for pro in prosearch%}
+        <tr>
+           {% with pro.protein|mysplit:"|" as prosplit %}
+                
+                    <td>{{ prosplit.0 }}</td>
+                    <td><b><a href= "http://www.uniprot.org/uniprot/{{protid}}" target="_blank">{{protid}}</a></b></td>
+                    <td>{{prosplit.2}}</td>
+            {% endwith%}
+            <td>{{pro.protein_desc}}</td>
+      	</tr>
+		{%endfor%}
+</table>
+{%endif%}
+
+{% if sscore %}
+<h2>Protein</h2>
+<table id="newspaper-a">
+    <thead>
+      <tr>
+          <th scope="col">Ion</th>
+            <th scope="col">Identity</th>
+            <th scope="col">Homology</th>
+            <th scope="col">Except</th>
+
+        </tr>
+    </thead>
+    <tbody>
+      {% for score in sscore %}
+      <tr>
+          <td> {{score.ionscore}}</td>
+          <td> {{score.identityscore}} </td>
+          <td> {{score.homologyscore}} </td>
+          <td> {{score.exceptscore}} </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%endif%}
+
+{%if seq%}
+<br/>
+<h2>External Source (<b>Uniprot</b>)</h2>
+
+<table id="table-5">
+	<tr>
+		<th bgcolor="#eee" align="left">Protein Sequence ( {{seq|length}})</th>
+   	</tr>
+	<tr>
+    	
+   		<td> {{seq}} </td>
+  	</tr>
+</table>
+{%endif%}
+<br/>
+
+{% if pfun or proca or proco or prosub or protti%}
+<h2>General Annotation</h2>
+{%endif%}
+
+{%if pfun%}
+<br/>
+
+<table id="table-2">
+	<tr>
+		<th align="left"><u>Function</u></th>
+   	</tr>
+	<tr>{%for fun in pfun%}
+    	<td> * {{fun}} </td>
+  	</tr>
+    	{%endfor%}
+</table>
+{%endif%}
+
+{%if proca%}
+<table id="table-1">
+	<tr>
+		<th align="left"><u>Catalytic activity</u></th>
+   	</tr>
+	<tr>	{%for cat in proca%}
+    	<td> * {{cat}} </td>
+  	</tr>
+    {%endfor%}
+</table>
+{%endif%}
+
+{%if proco%}
+<table id="table-1">
+	<tr>
+		<th align="left"><u>Cofactor</u></th>
+   	</tr>
+	<tr>	{%for co in proco%}
+    	<td> * {{co}} </td>
+  	</tr>
+    {%endfor%}
+</table>
+{%endif%}
+
+{%if prosub%}
+<table id="table-1">
+	<tr>
+		<th align="left"><u>Subunit</u></th>
+   	</tr>
+	<tr>	{%for sub in prosub%}
+    	<td> {{sub}} </td>
+  	</tr>
+    {%endfor%}
+</table>
+{%endif%}
+
+{%if protti%}
+<table id="table-1">
+	<tr>
+		<th align="left"><u>Tissue Specificity</u></th>
+   	</tr>
+	<tr>	{%for ti in protti%}
+    	<td> {{ti}} </td>
+  	</tr>
+    {%endfor%}
+</table>
+{%endif%}
+
+{%if proptm%}
+<table id="table-1">
+	<tr>
+		<th align="left"><u>PTM</u></th>
+   	</tr>
+	<tr>	{%for ptm in proptm%}
+    	<td> * {{ptm}} </td>
+  	</tr>
+    {%endfor%}
+</table>
+{%endif%}
+
+{%if prosimi%}
+<table id="table-1">
+	<tr>
+		<th align="left"><u>Similarity</u></th>
+   	</tr>
+	<tr>	{%for simi in prosimi%}
+    	<td> * {{simi}} </td>
+  	</tr>
+    {%endfor%}
+</table>
+{%endif%}
+
+{% if error%}
+<div id="norec">
+	<h3> Oops! No protein Found </h3>	
+	<h4> *Probably there is no pepXML record in the database</h4>
+    <h4> *No peptide no protein for specific spectra</h4>
+    <h4> *Easy way to track down the existance of protein is through peptide and mzML scan number</h4>
+    
+</div>
+{%endif%}

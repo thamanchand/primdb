@@ -1,0 +1,86 @@
+{%extends 'base.html'%}
+{% load pagination_tags %}
+<title>{%block page_title%}mzML files{%endblock%} </title>
+
+{%block custom_style%}
+
+<!-- custom styles -->
+    <style type="text/css">
+
+		body {
+			font-family: 'Open Sans', sans-serif;
+			padding-top: 20px;
+			padding-bottom: 40px;
+
+		}
+		table {
+			font-size: 12px;
+		}
+
+		#logo
+			a .off { 
+				display: block; 
+			}
+			a .on { 
+				display: none; 
+			}
+			a:hover .off { 
+				display: none; 
+			}
+			a:hover .on { 
+				display: block; 
+			}
+		.footer{
+			padding:20px;
+		 	margin: 30px 0 0 0;
+		 	color:#000000;
+		 	background:url("{{STATIC_URL}}img/footer_texture.png") repeat;
+		 	clear: both;
+		 }
+    </style>
+ {%endblock%}
+
+{%block maincontent%}
+	{% if exp %}
+	<h4>{{ exp.count }} mzML records in the database</h4>
+	<table class="table table-bordered">
+		<tr>
+	        <th>Filename</th>
+			<th>User</th>	
+			<th>Uploaded</th>
+			<th>Size</th>
+			<th>Located</th>	      					
+		</tr>
+		{% for section in exp %}
+			<tr>
+	      		<td> {{section.filename}} </td>
+				<td> {{section.fileuser}} </td>
+				<td> {{section.uploaddate}} </td>
+				<td> {{section.size}} </td>
+				<td> {{section.located}} </td>
+			</tr>   
+		{% endfor %}
+
+	</table>
+
+	{%endif%}
+
+
+<div class="pagination">
+    <span class="step-links">
+        {% if exp.has_previous %}
+            <a href="?page={{ exp.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ exp.number }} of {{ exp.paginator.num_pages }}.
+        </span>
+
+        {% if exp.has_next %}
+            <a href="?page={{ exp.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+	
+{%endblock%}

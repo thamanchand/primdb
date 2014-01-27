@@ -1,0 +1,53 @@
+{% if ssetting %}
+<h5>Database & Instrument Settings</h5>
+<table class="table table-bordered">
+    <thead>
+    	<tr>
+        	<th bgcolor="#eee">Database</th>
+            <th bgcolor="#eee">Taxonomy</th>
+            <th bgcolor="#eee">Mass</th>
+            <th bgcolor="#eee">Enzyme</th>
+            <th bgcolor="#eee">Instrument</th>
+        </tr>
+    </thead>
+    <tbody>
+    	{% for sett in ssetting %}
+    	<tr>
+        	<td> {{sett.mdatabase}} </td>
+            <td> {{sett.mtaxonomy}} </td>
+            <td> {{sett.mmass}} </td>
+            <td> {{sett.menzyme}} </td>
+            <td> {{sett.minstrument}} </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%endif%}
+
+{% if ssetting %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+
+            <th bgcolor="#eee">Fixed Modi</th>
+            <th bgcolor="#eee">Variable Modi</th>
+            <th bgcolor="#eee">M.Cleav</th>
+            <th bgcolor="#eee">Charges</th>
+            <th bgcolor="#eee">MPTol</th>
+            <th bgcolor="#eee">IPTol</th>
+       </tr>
+    </thead>
+    <tbody>
+        {% for sett in ssetting %}
+        <tr>
+            <td> {{sett.mfmodifi}} </td>
+            <td> {{sett.mvmodifi}} </td>
+            <td> {{sett.maxmisscleav}} </td>
+            <td> {{sett.mpepcharge}} </td> 
+            <td> {{sett.mptol}} </td>
+            <td> {{sett.mitol}} </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%endif%}

@@ -1,0 +1,265 @@
+{%if results%}
+<h5>Experiment</h5>
+<table class="table table-bordered">
+    <thead>
+    	<tr>
+        	<th bgcolor="#eee">Name</th>
+            <th bgcolor="#eee">User</th>
+            <th bgcolor="#eee">Uploaded</th>
+            <th bgcolor="#eee">Size</th>
+            <th bgcolor="#eee">Located</th>
+        </tr>
+    </thead>
+    <tbody>
+    	{% for section in results %}
+    	<tr>
+        	<td>{{section.sele_fk.exp.filename}}</td>
+            <td>{{section.sele_fk.exp.fileuser}}</td>
+            <td> {{section.sele_fk.exp.uploaddate}} </td>
+            <td>{{section.sele_fk.exp.size}}</td>
+            <td>{{section.sele_fk.exp.located|truncatechars:30}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%endif%}
+
+
+
+{% if sf %}
+<h5>Source Information</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">Source_ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sinfo in sf %}
+        <tr>
+            <td>{{sinfo.sf_id}}</td>
+            <td>{{sinfo.name}}</td>
+            <td> {{sinfo.location|truncatechars:40}} </td>
+        </tr>
+            {% endfor %}
+
+        <tr>
+            <td colspan="5">
+                    <h4>Ontology</h4>
+                    <table class="table table-bordered">  
+                        <thead>
+                           
+                            <tr>
+                                <th bgcolor="#eee">Name</th>
+                                <th bgcolor="#eee">Accession</th>   
+                                <th bgcolor="#eee">value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for scv in scv %}
+                            <tr>
+                                <td>{{scv.name}}</td>
+                                <td><a href= "http://www.uniprot.org/uniprot/{{scv.accession}}" target="_blank">{{scv.accession}}</a></td>
+                                <td>{{scv.value}}</td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                        
+                    </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{%endif%}
+
+
+{%if soft  %}
+<br/>
+<h5>Software Info</h5>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th bgcolor="#eee">Software</th>	
+			<th bgcolor="#eee">Version</th>
+    </thead>
+    <tbody>    					
+		</tr>
+		{% for soft1 in soft  %}
+		
+		<tr>
+				<td> {{soft1.soft_id}} </td>
+
+				<td> {{soft1.version}} </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                    <h4>Additional information</h4>
+                    <table class="table table-bordered">  
+                    	<thead>
+    	                	<tr>
+    							<th bgcolor="#eee">Accession</th>	
+    							<th bgcolor="#eee">Name</th>
+    							<th bgcolor="#eee">value</th>
+    						</tr>
+    					</thead>
+    					<tbody>
+    						{% for soft in software %}
+    						<tr>
+    							<td>{{soft.name}}</td>
+    							<td>{{soft.accession}}</td>
+    							<td>{{soft.value}}</td>
+    						</tr>
+                            {% endfor %}
+    					</tbody>
+    					
+    				</table>
+           	</td>
+        </tr>
+	
+		{% endfor %}
+	</tbody>
+</table>
+{%endif%}
+
+
+{%if datap and datapro %}
+<br/>
+<h5>Data Processing</h5>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th bgcolor="#eee">Processor</th>	
+    </thead>
+    <tbody>    					
+		</tr>
+		{% for data in datap  %}
+		{% for data1 in datapro %}
+		<tr>
+				<td> {{data.dp_id}} </td>
+        </tr>
+        <tr>
+        <td colspan="5">
+                <h4>Additional information</h4>
+                <table class="table table-bordered">  
+                	<thead>
+	                	<tr>
+							<th bgcolor="#eee">Accession</th>	
+							<th bgcolor="#eee">Name</th>
+							<th bgcolor="#eee">value</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+						<tr>
+							<td>{{data1.name}}</td>
+							<td>{{data1.accession}}</td>
+							<td>{{data1.value}}</td>
+						</tr>
+					</tbody>
+					
+				</table>
+       	</td>
+        </tr>
+		{% endfor %}
+		{% endfor %}
+	</tbody>
+</table>
+{%endif%}
+
+
+{%if ins_id%}
+<br/>
+<h5>Instrument Configuration</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th bgcolor="#eee">ID</th>   
+    </thead>
+    <tbody>                     
+        </tr>
+            {% for instrid in ins_id  %}
+                <td> {{instrid.ins_id}} </td>
+        </tr>
+         <tr>
+            <td colspan="5">
+                <h4>Source</h4>
+                <table class="table table-bordered">  
+                    <thead>
+                        <tr>
+                            <th bgcolor="#eee">Accession</th>   
+                            <th bgcolor="#eee">Name</th>
+                            <th bgcolor="#eee">value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ins in inss %}
+                        <tr>
+                            <td>{{ins.name}}</td>
+                            <td>{{ins.accession}}</td>
+                            <td>{{ins.value}}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                    
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <h4>Analyzer</h4>
+                <table class="table table-bordered">  
+                    <thead>
+                        <tr>
+                            <th bgcolor="#eee">Accession</th>   
+                            <th bgcolor="#eee">Name</th>
+                            <th bgcolor="#eee">value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ina in insa %}
+
+                        <tr>
+                            <td>{{ina.name}}</td>
+                            <td>{{ina.accession}}</td>
+                            <td>{{ina.value}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5">
+                <h4>Detector</h4>
+                <table class="table table-bordered">  
+                    <thead>
+                        <tr>
+                            <th bgcolor="#eee">Accession</th>   
+                            <th bgcolor="#eee">Name</th>
+                            <th bgcolor="#eee">value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ind in insd %}
+
+                        <tr>
+                            <td>{{ind.name}}</td>
+                            <td>{{ind.accession}}</td>
+                            <td>{{ind.value}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    
+                </table>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+{%endif%}

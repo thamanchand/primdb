@@ -1,0 +1,116 @@
+{% load mysplit %}
+{% if spect %}
+<h5>Spectrum Details</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th bgcolor="#eee">Experiment</th>
+            <th bgcolor="#eee">Spectrum_ID</th>
+            <th bgcolor="#eee">Charge state</th>
+            <th bgcolor="#eee">#Peaks</th>
+            <th bgcolor="#eee">Peak Intensity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for spectrum in spect %}
+        <tr>
+            <td> {{expname}} </td>
+             {% with spectrum.spec_id|mysplit:" " as specsplit %}
+                <td> {{specsplit.2}} </td>
+            {% endwith%}
+            <td> {{spectrum.spec_fk.chargestate}} </td>
+            <td> {{spectrum.spec_defaultarraylength}} </td>
+            <td> {{spectrum.spec_fk.peakinten|floatformat:5}} </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%endif%}
+
+{% if spect_cv %}
+<h5>General Info</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th bgcolor="#eee">Name</th>
+            <th bgcolor="#eee">Value</th>
+            <th bgcolor="#eee">Ontology</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for spect_cv in spect_cv %}
+        <tr>
+            <td> {{spect_cv.name}} </td>
+            <td> {{spect_cv.value}} </td>
+            <td><a href= "http://www.ebi.ac.uk/ontology-lookup/?termId={{spect_cv.accession}}" target="_blank">{{spect_cv.accession}}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%endif%}
+
+
+
+{%if scanlist%}
+<h5>Scan Settings</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Value</th>
+            <th scope="col">Ontology</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>[Thermo Trailer Extra]Monoisotopic M/Z </td>
+            <td> {{scanlist.1.value}} <i>Da</i></td>
+            <td> <a href= "http://www.ebi.ac.uk/ontology-lookup/?termId={{scanlist.1.accession}}" target="_blank">{{scanlist.1.accession}}</a> </td>
+        </tr>
+        <tr>
+            <td>ion injection time</td>
+            <td> {{scanlist.2.value}} <i>ms</i></td>
+            <td> <a href= "http://www.ebi.ac.uk/ontology-lookup/?termId={{scanlist.2.accession}}" target="_blank">{{scanlist.2.accession}}</a> </td>
+        </tr>
+        <tr>
+            <td>preset scan configuration </td>
+            <td> {{scanlist.3.value}}</td>
+            <td> <a href= "http://www.ebi.ac.uk/ontology-lookup/?termId={{scanlist.3.accession}}" target="_blank">{{scanlist.3.accession}}</a> </td>
+        </tr>
+        <tr>
+            <td>filter string </td>
+            <td> {{scanlist.4.value}}</td>
+            <td> <a href= "http://www.ebi.ac.uk/ontology-lookup/?termId={{scanlist.4.accession}}" target="_blank">{{scanlist.4.accession}}</a> </td>
+        </tr>
+        <tr>
+            <td>scan start time</td>
+            <td> {{scanlist.5.value}}<i>min</i></td>
+            <td> <a href= "http://www.ebi.ac.uk/ontology-lookup/?termId={{scanlist.5.accession}}" target="_blank">{{scanlist.5.accession}}</a> </td>
+        </tr>
+
+    </tbody>
+</table>
+{%endif%}
+
+{%if scan%}
+<h5>Scan Window</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th bgcolor="#eee">Name</th>
+            <th bgcolor="#eee">Value</th>
+            <th bgcolor="#eee">Ontology</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sc in scanw %}
+        <tr>
+            <td> {{sc.name}} </td>
+            <td> {{sc.value}} </td>
+            <td> <a href= "http://www.ebi.ac.uk/ontology-lookup/?termId={{sc.accession}}" target="_blank">{{sc.accession}}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%endif%}
+

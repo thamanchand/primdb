@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block page_title %}{% endblock %}</title>
+	
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- styles -->
+    <link href="{{STATIC_URL}}css/bootstrap.css" rel="stylesheet">
+	<link href="{{STATIC_URL}}css/datepicker.css" rel="stylesheet">
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	{%block custom_style%}{%endblock%}
+    <link href="{{STATIC_URL}}css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assetico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{STATIC_URL}}ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{STATIC_URL}}ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="{{STATIC_URL}}ico/apple-touch-icon-57-precomposed.png">
+    <link rel="SHORTCUT ICON" href="{{STATIC_URL}}img/mi.ico">
+  </head>
+
+  <body>
+
+  	<!--start of the container-->
+
+  	<div class="container">
+  		<!--start of the header section-->
+		<div class="masthead">
+			
+
+		<div id="header">
+        	<a href="/" id="logo">
+				<img src="{{STATIC_URL}}img/mainlogo.jpg" class="off" alt="">
+				<img src="{{STATIC_URL}}img/amainlogo.jpg" class="on" alt="">
+            </a>
+    </div>
+		</div>
+		<!--end of the header section-->
+     	<hr>
+     	{%block maincontent%} {%endblock%}
+		
+		<!--start of the footer-->
+		<div class="row">
+			<div class="span12">
+				<div class="footer">
+			        <address>
+						<strong>Turku Centre for Biotechnology (Proteomics)</strong><br/>
+						Biocity, 5th floor, Tykistokatu 6<br/>
+						FI-20520, Turku, Finland<br/>
+						(123) 456-7890<br/>
+						<a href="mailto:#">proteomics_service (at) btk.fi</a><br/>
+            
+					</address>
+          <p>Developed by: <b>Thaman Chand</b></p>
+          <p>Contact: <a href="mailto:thaman.me@gmail.com" target="_top">thaman.me@gmail.com</p>
+		    	</div>
+		    </div>
+		</div>
+    	<!--end of the footer-->
+    </div>
+    <!-- end of the container -->
+    {%block scripts%}{%endblock%}
+	</div>
+  </body>
+</html>
