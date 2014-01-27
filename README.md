@@ -20,7 +20,7 @@ Finding the occurance of precursor ion mass and protein and peptide identificati
 		
 3. #####  Postgresql settings
            psql -d template1 -U postgres
-           CREATE USER primdbuser WITH PASSWORD 'web1020';
+           CREATE USER primdbuser WITH PASSWORD '****';
            CREATE DATABASE primdb;
            GRANT ALL PRIVILEGES ON DATABASE primdb to primdbuser;
 
@@ -35,7 +35,7 @@ Finding the occurance of precursor ion mass and protein and peptide identificati
 *  Upload (mzML)into database
  
        
-        $ python mzml.py experiment_glucose.mzML.
+        $ python mzml.py experiment_glucose.mzML
         
           
 * Upload (pepXML)into database 
